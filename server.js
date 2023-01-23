@@ -2,15 +2,15 @@ const inquirer = require("inquirer");
 const mysql = require("mysql2/promise");
 const cTable = require("console.table");
 const questions = require("./utils/questions.js");
+const dotenv = require("dotenv").config();
 
-
-// Connect to database
+// // Connect to database
 const menu = async () => {
     const db = await mysql.createConnection(
         {
             host: '127.0.0.1',
             user: 'root',
-            password: '',
+            password: 'process.env.MYSQL_PASSWORD',
             database: 'employee_db'
         }
     );
