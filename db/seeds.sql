@@ -26,3 +26,5 @@ VALUES ("Andy", "Dwyer", 8),
        ("April", "Ludgate", 9),
        ("Sewage", "Joe", 4),
        ("Donna", "Meagle", 6)
+
+--need to handle employees that are managers and do not have a manager, then assign employees a manager
