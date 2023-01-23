@@ -10,7 +10,7 @@ const menu = async () => {
         {
             host: '127.0.0.1',
             user: 'root',
-            password: 'UTABootcamp23!',
+            password: '',
             database: 'employee_db'
         }
     );
