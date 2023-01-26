@@ -16,12 +16,12 @@ const questions = {
         }
     ],
 
-    addRole: function() {
+    addRole: function(rows) {
         return [
             {
                 type: "input",
-                message: "What is the name of the new role?",
-                name: "newRoleName"
+                message: "What is the title of the new role?",
+                name: "newRoleTitle"
             },
             {
                 type: "input",
@@ -35,14 +35,15 @@ const questions = {
                 // }
             },
             {
-                type: "input",
+                type: "list",
                 message: "What department does this role belong to?",
-                name: "newRoleDept"
+                name: "newRoleDept",
+                choices: rows
             }
         ]
     },
 
-    addEmployee: function() {
+    addEmployee: function(roles, managers) {
         return [
             {
                 type: "input",
@@ -55,18 +56,36 @@ const questions = {
                 name: "newEmployeeLN"
             },
             {
-                type: "input",
+                type: "list",
                 message: "What is the employee's role?",
-                name: "newEmployeeRole"
+                name: "newEmployeeRole",
+                choices: roles
             },
             {
-                type: "input",
+                type: "list",
                 message: "What is the of the employee's manager?",
-                name: "newEmployeeManager"
+                name: "newEmployeeManager",
+                choices: managers
+            }
+        ]
+    },
+
+    updateEmployee: function(employees, roles) {
+        return [
+            {
+                type: "list",
+                message: "Which employee's role would you like to update?",
+                name: "updateEmployee",
+                choices: employees
+            },
+            {
+                type: "list",
+                message: "What is the employee's new role?",
+                name: "updateRole",
+                choices: roles
             }
         ]
     }
-
     }
 
 module.exports = questions;

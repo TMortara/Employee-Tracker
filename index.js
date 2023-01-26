@@ -45,11 +45,11 @@ function init(){
                 break;
 
             case "Add Employee":
-                // addEmployee();
+                addEmployee();
                 break;
 
             case "Update Employee Role":
-                // updateEmployee();
+                updateEmployee();
                 break;
 
             case "Exit":
@@ -90,33 +90,51 @@ function viewEmployees() {
 function addDepartment() {    
     inquirer.prompt(questions.addDepartment).then(data =>
         {
-        db.query(`INSERT into department (name) VALUES ("${data.deptName}")`, function (err, results) {
+        db.query(`INSERT INTO department (name) VALUES (?)`, [data.deptName], function (err, results) {
             // console.table(results);
             console.log(`${data.deptName} SUCCESSFULLY created`);
-            init();
+            viewDepartment();
         });
-        })
+        });
 
 }
-
-// const addRole = async (db) => {
-//     var query = `SELECT id AS value, name AS name FROM department`
-//     var [rows, fields] = await db.execute(query)
-//     console.log(rows)
-//     var data = await inquirer.prompt(questions.addRole(rows))
-//     console.log(data)
-    // }
 
 function addRole() {    
-    inquirer.prompt(questions.addRole()).then(data => {
-        db.query(`INSERT into department (name) VALUES ("${data.deptName}")`, function (err, results) {
-            // console.table(results);
-            console.log(`${data.deptName} SUCCESSFULLY created`);
-      
-            init();
+    db.query('SELECT name, id AS value FROM department', function (err, results) {
+        inquirer.prompt(questions.addRole(results)).then(data => {
+            db.query(`INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`, [data.newRoleTitle, data.newRoleSalary, data.newRoleDept], function (err, results) {
+                console.log(`${data.newRoleTitle} SUCCESSFULLY created`);
+            
+                viewRoles();
+            });
         });
-        console.log(data);
-    })
-
+    });
 }
-    
+
+function addEmployee() {
+    db.query('SELECT title AS name, id AS value FROM role', function (err, roleResults) {
+        db.query("SELECT CONCAT(first_name, ' ', last_name) AS name, id AS value FROM employee", function (err, managerResults) {
+           inquirer.prompt(questions.addEmployee(roleResults, managerResults)).then(data => {
+                db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`, [data.newEmployeeFN, data.newEmployeeLN, data.newEmployeeRole, data.newEmployeeManager], function (err, results){
+                    console.log(`${data.newEmployeeFN} ${data.newEmployeeLN} SUCCESSFULLY created`);
+                    
+                    viewEmployees();
+                });
+           });
+        });
+    });
+}
+
+function updateEmployee() {
+    db.query("SELECT CONCAT(first_name, ' ', last_name) AS name, id AS value FROM employee", function (err, employeeResults) {
+        db.query('SELECT title AS name, id AS value FROM role', function (err, roleResults){
+            inquirer.prompt(questions.updateEmployee(employeeResults, roleResults)).then(data => {
+                db.query('UPDATE employee SET role_id  = ? WHERE id = ?', [data.updateRole, data.updateEmployee], function (err, results) {
+                    console.log("Employee's role has been SUCCESSFULLY updated!");
+                    
+                    viewEmployees();
+                });
+            });
+        });
+    });
+}
