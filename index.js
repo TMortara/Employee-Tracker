@@ -33,15 +33,15 @@ function init(){
                 break;
             
             case "View All Employees":
-                // viewEmployees();
+                viewEmployees();
                 break;
 
             case "Add Department":
-                // addDepartment();
+                addDepartment();
                 break;
 
             case "Add Role":
-                // addRole();
+                addRole();
                 break;
 
             case "Add Employee":
@@ -73,18 +73,32 @@ function viewRoles() {
     });
 }
 
+function viewEmployees() {
+    const queryString = `SELECT e.id, e.first_name, e.last_name, r.title, d.name, r.salary, CONCAT(e2.first_name, ' ', e2.last_name) AS manager 
+    FROM employee AS e 
+    JOIN role AS r ON r.id = e.role_id 
+    JOIN department AS d ON d.id = r.department_id 
+    LEFT JOIN employee AS e2 ON e2.id = e.manager_id
+    ORDER BY e.id`;
+    
+    db.query(queryString, function (err, results) {
+        console.table(results);
+        init();
+    });
+}
 
+function addDepartment() {    
+    inquirer.prompt(questions.addDepartment).then(data =>
+        {
+        db.query(`INSERT into department (name) VALUES ("${data.deptName}")`, function (err, results) {
+            // console.table(results);
+            console.log(`${data.deptName} SUCCESSFULLY created`);
+            init();
+        });
+        })
 
-// const addDepartment = async (db) => {
-//     const data = await inquirer.prompt(questions.addDepartment);
-//     console.log(data)
-//     var query = `INSERT into department (name) VALUES ("${data.deptName}")`
-//     console.log(query)
-//     const [rows, fields] = await db.execute(query)
-//     console.log(rows);
-//     viewDepartment(db)
+}
 
-// }
 // const addRole = async (db) => {
 //     var query = `SELECT id AS value, name AS name FROM department`
 //     var [rows, fields] = await db.execute(query)
@@ -93,4 +107,16 @@ function viewRoles() {
 //     console.log(data)
     // }
 
+function addRole() {    
+    inquirer.prompt(questions.addRole()).then(data => {
+        db.query(`INSERT into department (name) VALUES ("${data.deptName}")`, function (err, results) {
+            // console.table(results);
+            console.log(`${data.deptName} SUCCESSFULLY created`);
+      
+            init();
+        });
+        console.log(data);
+    })
+
+}
     

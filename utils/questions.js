@@ -26,7 +26,13 @@ const questions = {
             {
                 type: "input",
                 message: "What is the salary for this role?",
-                name: "newRoleSalary"
+                name: "newRoleSalary",
+                // validate: function(answer) {
+                //     if (!isNaN(answer)) {
+                //         return console.log('Salary requires a valid number without decimal places');
+                //     }
+                //     return true;
+                // }
             },
             {
                 type: "input",
