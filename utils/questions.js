@@ -4,7 +4,20 @@ const questions = {
             type: "list",
             message: "What would you like to do?",
             name: "menuAction",
-            choices: ["View All Departments", "View All Roles", "View All Employees", "View Employees by Manager", "Add Department", "Add Role", "Add Employee", "Update Employee Role", "Update Employee's Manager", "Exit"],
+            choices: ["View All Departments",
+                "View All Roles",
+                "View All Employees",
+                "View Employees by Manager",
+                "View Employees by Department",
+                "Add Department",
+                "Add Role",
+                "Add Employee",
+                "Update Employee Role",
+                "Update Employee's Manager",
+                "Delete Employee",
+                "Delete Role",
+                "Delete Department",
+                "Exit"],
         }
     ],
 
@@ -92,7 +105,7 @@ const questions = {
         ]
     },
 
-    updateManager: function(employees, manager) {
+    updateManager: function(employees, managers) {
         manager.push({
             name: "None",
             value: null
@@ -108,18 +121,62 @@ const questions = {
                 type: "list",
                 message: "Who is the employee's new manager?",
                 name: "newManager",
-                choices: manager
+                choices: managers
             }
         ]
     },
 
-    viewByMgr: function(manager) {
+    viewByMgr: function(managers) {
         return [
             {
                 type: "list",
                 message: "Which manager would you like to search by?",
                 name: "managerView",
-                choices: manager
+                choices: managers
+            }
+        ]
+    },
+
+    viewByDept: function(departments) {
+        return [
+            {
+                type: "list",
+                message: "Which department would you like to search by?",
+                name: "deptView",
+                choices: departments
+            }
+        ]
+    },
+
+    deleteEmployee: function(employees) {
+        return [
+            {
+                type: "list",
+                message: "Which employee would you like to delete?",
+                name: "deleteEmployee",
+                choices: employees
+            }
+        ]
+    },
+
+    deleteRole: function(roles) {
+        return [
+            {
+                type: "list",
+                message: "Which role would you like to delete?",
+                name: "deleteRole",
+                choices: roles
+            }
+        ]
+    },
+
+    deleteDept: function(departments) {
+        return [
+            {
+                type: "list",
+                message: "Which department would you like to delete?",
+                name: "deleteDept",
+                choices: departments
             }
         ]
     },

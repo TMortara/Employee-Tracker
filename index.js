@@ -41,6 +41,10 @@ function init(){
                 viewByMgr();
                 break;
             
+            case "View Employees by Department":
+                viewByDept();
+                break;
+
             case "Add Department":
                 addDepartment();
                 break;
@@ -59,6 +63,18 @@ function init(){
 
             case "Update Employee's Manager":
                 updateManager();
+                break;
+
+            case "Delete Employee":
+                deleteEmployee();
+                break;
+
+            case "Delete Role":
+                deleteRole();
+                break;
+
+            case "Delete Department":
+                deleteDept();
                 break;
 
             case "Exit":
@@ -175,19 +191,57 @@ function viewByMgr() {
 }
 
 function viewByDept() {
-
+    db.query('SELECT name, id AS value FROM department', function (err, deptResults) {
+        inquirer.prompt(questions.viewByDept(deptResults)).then(data => {
+            db.query(`SELECT CONCAT(e.first_name, ' ', e.last_name) AS employee_name, r.title, d.name AS department_name 
+            FROM employee AS e 
+            JOIN role AS r ON e.role_id = r.id 
+            JOIN department AS d ON d.id = r.department_id 
+            WHERE r.department_id = ?`, [data.deptView], function (err, employeeResults) {
+                if(employeeResults.length > 0) {
+                    console.table(employeeResults);
+                } else {
+                    console.log("No employee's found in this department");
+                }
+            init();
+            })
+        })
+    })
 }
 
 function deleteEmployee() {
-
+    db.query("SELECT CONCAT(first_name, ' ', last_name) AS name, id AS value FROM employee", function (err, employeeResults) {
+        inquirer.prompt(questions.deleteEmployee(employeeResults)).then(data => {
+            db.query("UPDATE employee SET manager_id = null WHERE manager_id = ?", [data.deleteEmployee], function (err, updateResults) {
+                db.query("DELETE FROM employee WHERE id = ?", [data.deleteEmployee], function (err, deleteResults) {
+                    
+                    viewEmployees();
+                });
+            });
+        });
+    });
 }
 
 function deleteRole() {
+    db.query('SELECT title AS name, id AS value FROM role', function (err, roleResults) {
+        inquirer.prompt(questions.deleteRole(roleResults)).then(data => {
+            db.query("DELETE FROM role WHERE id = ?", [data.deleteRole], function (err, deleteResults) {
 
+                viewRoles();
+            });
+        });
+    });
 }
 
 function deleteDept() {
-
+    db.query('SELECT name, id AS value FROM department', function (err, deptResults) {
+        inquirer.prompt(questions.deleteDept(deptResults)).then(data => {
+            db.query('DELETE FROM department WHERE id = ?', [data.deleteDept], function (err, deleteResults) {
+                
+                viewDepartment();
+            });
+        });
+    });
 }
 
 function budget() {
