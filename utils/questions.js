@@ -44,6 +44,11 @@ const questions = {
     },
 
     addEmployee: function(roles, managers) {
+        managers.push({
+            name: "None",
+            value: null
+        });
+
         return [
             {
                 type: "input",
@@ -88,6 +93,10 @@ const questions = {
     },
 
     updateManager: function(employees, manager) {
+        manager.push({
+            name: "None",
+            value: null
+        });
         return [
             {
                 type: "list",

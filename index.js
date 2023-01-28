@@ -37,7 +37,7 @@ function init(){
                 viewEmployees();
                 break;
 
-            case "View Employees By Manager":
+            case "View Employees by Manager":
                 viewByMgr();
                 break;
             
@@ -162,10 +162,10 @@ function updateManager() {
 }
 
 function viewByMgr() {
-    db.query("SELECT CONCAT(first_name, ' ', last_name) AS name, id AS value FROM employee WHERE manager_id = null", function (err, managerResults) {
-        console.log(managerResults);
-        db.query("SELECT CONCAT(first_name, ' ', last_name) AS name, id AS value FROM employee", function (err, employeeResults) {
+    const managerQuery = "SELECT DISTINCT CONCAT(e2.first_name, ' ', e2.last_name) AS name, e2.id AS value FROM employee AS e LEFT JOIN employee AS e2 ON e.manager_id = e2.id WHERE e2.id IS not null"
+    db.query(managerQuery, function (err, managerResults) {
             inquirer.prompt(questions.viewByMgr(managerResults)).then(data => {
+                db.query("SELECT * FROM employee WHERE manager_id = ?", [data.managerView], function (err, employeeResults) {
                 console.table(employeeResults);
 
                 init();
