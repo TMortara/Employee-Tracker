@@ -4,7 +4,7 @@ const questions = {
             type: "list",
             message: "What would you like to do?",
             name: "menuAction",
-            choices: ["View All Departments", "View All Roles", "View All Employees", "Add Department", "Add Role", "Add Employee", "Update Employee Role", "Exit"],
+            choices: ["View All Departments", "View All Roles", "View All Employees", "View Employees by Manager", "Add Department", "Add Role", "Add Employee", "Update Employee Role", "Update Employee's Manager", "Exit"],
         }
     ],
 
@@ -85,7 +85,35 @@ const questions = {
                 choices: roles
             }
         ]
-    }
+    },
+
+    updateManager: function(employees, manager) {
+        return [
+            {
+                type: "list",
+                message: "Which employee's manager would you like to update?",
+                name: "updateManager",
+                choices: employees
+            },
+            {
+                type: "list",
+                message: "Who is the employee's new manager?",
+                name: "newManager",
+                choices: manager
+            }
+        ]
+    },
+
+    viewByMgr: function(manager) {
+        return [
+            {
+                type: "list",
+                message: "Which manager would you like to search by?",
+                name: "managerView",
+                choices: manager
+            }
+        ]
+    },
     }
 
 module.exports = questions;

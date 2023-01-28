@@ -2,6 +2,7 @@ const inquirer = require("inquirer");
 const mysql = require("mysql2");
 const cTable = require("console.table");
 const questions = require("./utils/questions.js");
+const { viewEmployeesByMgr } = require("./utils/questions.js");
 const dotenv = require("dotenv").config();
 
 // // Connect to database
@@ -36,6 +37,10 @@ function init(){
                 viewEmployees();
                 break;
 
+            case "View Employees By Manager":
+                viewByMgr();
+                break;
+            
             case "Add Department":
                 addDepartment();
                 break;
@@ -50,6 +55,10 @@ function init(){
 
             case "Update Employee Role":
                 updateEmployee();
+                break;
+
+            case "Update Employee's Manager":
+                updateManager();
                 break;
 
             case "Exit":
@@ -96,7 +105,6 @@ function addDepartment() {
             viewDepartment();
         });
         });
-
 }
 
 function addRole() {    
@@ -127,7 +135,7 @@ function addEmployee() {
 
 function updateEmployee() {
     db.query("SELECT CONCAT(first_name, ' ', last_name) AS name, id AS value FROM employee", function (err, employeeResults) {
-        db.query('SELECT title AS name, id AS value FROM role', function (err, roleResults){
+        db.query('SELECT title AS name, id AS value FROM role', function (err, roleResults) {
             inquirer.prompt(questions.updateEmployee(employeeResults, roleResults)).then(data => {
                 db.query('UPDATE employee SET role_id  = ? WHERE id = ?', [data.updateRole, data.updateEmployee], function (err, results) {
                     console.log("Employee's role has been SUCCESSFULLY updated!");
@@ -138,3 +146,54 @@ function updateEmployee() {
         });
     });
 }
+
+function updateManager() {
+    db.query("SELECT CONCAT(first_name, ' ', last_name) AS name, id AS value FROM employee", function (err, employeeResults) {
+        db.query("SELECT CONCAT(first_name, ' ', last_name) AS name, id AS value FROM employee", function (err, managerResults) {
+            inquirer.prompt(questions.updateManager(employeeResults, managerResults)).then(data => {
+                db.query('UPDATE employee SET manager_id = ? WHERE id = ?', [data.newManager, data.updateManager], function (err, results) {
+                    console.log("Employee's manager has been SUCCESSFULLY updated!");
+
+                    viewEmployees();
+                })
+            })
+        })
+    })
+}
+
+function viewByMgr() {
+    db.query("SELECT CONCAT(first_name, ' ', last_name) AS name, id AS value FROM employee WHERE manager_id = null", function (err, managerResults) {
+        console.log(managerResults);
+        db.query("SELECT CONCAT(first_name, ' ', last_name) AS name, id AS value FROM employee", function (err, employeeResults) {
+            inquirer.prompt(questions.viewByMgr(managerResults)).then(data => {
+                console.table(employeeResults);
+
+                init();
+            });
+        });
+   });
+}
+
+function viewByDept() {
+
+}
+
+function deleteEmployee() {
+
+}
+
+function deleteRole() {
+
+}
+
+function deleteDept() {
+
+}
+
+function budget() {
+
+}
+
+// function quit() {
+//     process.exit();
+// }
