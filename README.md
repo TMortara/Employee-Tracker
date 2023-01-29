@@ -76,14 +76,11 @@ After installing Node.js, open the integrated terminal in VS Code and run `npm i
 
 ## Recording
 
-## Screenshots of Application
 
-### Main Menu Prompts
+## Main Menu Prompt Screenshots
 <img width="340" alt="Screen Shot 2023-01-28 at 8 36 34 PM" src="https://user-images.githubusercontent.com/107971753/215301357-f3b99b77-7d1d-47b0-9a42-061845d8ff36.png">
 
 <img width="334" alt="Screen Shot 2023-01-28 at 8 39 21 PM" src="https://user-images.githubusercontent.com/107971753/215301394-28d1de81-41df-4578-9ae0-aafda6726879.png">
-
-### Application 
 
 
 
