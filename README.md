@@ -75,7 +75,7 @@ After installing Node.js, open the integrated terminal in VS Code and run `npm i
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Recording
-https://user-images.githubusercontent.com/107971753/215301825-bf312234-37e8-4507-bb35-a27fbafe5464.mp4
+https://user-images.githubusercontent.com/107971753/215301946-2bb4b519-d8ac-4924-a9a9-36015f9abd13.mp4
 
 ## Main Menu Prompt Screenshots
 <img width="340" alt="Screen Shot 2023-01-28 at 8 36 34 PM" src="https://user-images.githubusercontent.com/107971753/215301357-f3b99b77-7d1d-47b0-9a42-061845d8ff36.png">
