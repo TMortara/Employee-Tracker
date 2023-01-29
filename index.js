@@ -17,11 +17,12 @@ const db = mysql.createConnection(
 
 db.connect((err) => {
     if (err) throw err;
-    console.log("connectedtodatabase");
+    console.log("You are now connected to the employee database!");
 
     init();
 });
 
+// Start function
 function init(){
     inquirer.prompt(questions.menu).then((action) => {
         switch (action.menuAction) {
@@ -43,6 +44,10 @@ function init(){
             
             case "View Employees by Department":
                 viewByDept();
+                break;
+
+            case "View Department Budget":
+                deptBudget();
                 break;
 
             case "Add Department":
@@ -78,12 +83,15 @@ function init(){
                 break;
 
             case "Exit":
-                //quit()
+                quit();
                 break;
         }
     });
 }
 
+// VIEW FUNCTIONS:
+
+// View all departments
 function viewDepartment() {
     db.query(`SELECT * FROM department`, function (err, results) {
         console.table(results);
@@ -91,6 +99,7 @@ function viewDepartment() {
     });
 }
 
+// View all roles
 function viewRoles() {
     db.query(`SELECT * FROM role`, function (err, results) {
         console.table(results);
@@ -98,6 +107,7 @@ function viewRoles() {
     });
 }
 
+//View all employees
 function viewEmployees() {
     const queryString = `SELECT e.id, e.first_name, e.last_name, r.title, d.name, r.salary, CONCAT(e2.first_name, ' ', e2.last_name) AS manager 
     FROM employee AS e 
@@ -105,13 +115,16 @@ function viewEmployees() {
     JOIN department AS d ON d.id = r.department_id 
     LEFT JOIN employee AS e2 ON e2.id = e.manager_id
     ORDER BY e.id`;
-    
+
     db.query(queryString, function (err, results) {
         console.table(results);
         init();
     });
 }
 
+// ADD FUNCTIONS
+
+// Add new department
 function addDepartment() {    
     inquirer.prompt(questions.addDepartment).then(data =>
         {
@@ -123,6 +136,7 @@ function addDepartment() {
         });
 }
 
+// Add new role
 function addRole() {    
     db.query('SELECT name, id AS value FROM department', function (err, results) {
         inquirer.prompt(questions.addRole(results)).then(data => {
@@ -135,6 +149,7 @@ function addRole() {
     });
 }
 
+// Add new employee
 function addEmployee() {
     db.query('SELECT title AS name, id AS value FROM role', function (err, roleResults) {
         db.query("SELECT CONCAT(first_name, ' ', last_name) AS name, id AS value FROM employee", function (err, managerResults) {
@@ -149,6 +164,9 @@ function addEmployee() {
     });
 }
 
+// UPDATE FUNCTION
+
+// Update employee's role
 function updateEmployee() {
     db.query("SELECT CONCAT(first_name, ' ', last_name) AS name, id AS value FROM employee", function (err, employeeResults) {
         db.query('SELECT title AS name, id AS value FROM role', function (err, roleResults) {
@@ -163,6 +181,9 @@ function updateEmployee() {
     });
 }
 
+// BONUS FUNCTIONS
+
+// Update employees manager
 function updateManager() {
     db.query("SELECT CONCAT(first_name, ' ', last_name) AS name, id AS value FROM employee", function (err, employeeResults) {
         db.query("SELECT CONCAT(first_name, ' ', last_name) AS name, id AS value FROM employee", function (err, managerResults) {
@@ -171,12 +192,13 @@ function updateManager() {
                     console.log("Employee's manager has been SUCCESSFULLY updated!");
 
                     viewEmployees();
-                })
-            })
-        })
-    })
+                });
+            });
+        });
+    });
 }
 
+// View employees by manager
 function viewByMgr() {
     const managerQuery = "SELECT DISTINCT CONCAT(e2.first_name, ' ', e2.last_name) AS name, e2.id AS value FROM employee AS e LEFT JOIN employee AS e2 ON e.manager_id = e2.id WHERE e2.id IS not null"
     db.query(managerQuery, function (err, managerResults) {
@@ -190,6 +212,7 @@ function viewByMgr() {
    });
 }
 
+// View employees by department
 function viewByDept() {
     db.query('SELECT name, id AS value FROM department', function (err, deptResults) {
         inquirer.prompt(questions.viewByDept(deptResults)).then(data => {
@@ -198,17 +221,18 @@ function viewByDept() {
             JOIN role AS r ON e.role_id = r.id 
             JOIN department AS d ON d.id = r.department_id 
             WHERE r.department_id = ?`, [data.deptView], function (err, employeeResults) {
-                if(employeeResults.length > 0) {
+                if (employeeResults.length > 0) {
                     console.table(employeeResults);
                 } else {
                     console.log("No employee's found in this department");
                 }
             init();
-            })
-        })
-    })
+            });
+        });
+    });
 }
 
+// Delete employee
 function deleteEmployee() {
     db.query("SELECT CONCAT(first_name, ' ', last_name) AS name, id AS value FROM employee", function (err, employeeResults) {
         inquirer.prompt(questions.deleteEmployee(employeeResults)).then(data => {
@@ -222,6 +246,7 @@ function deleteEmployee() {
     });
 }
 
+// Delete role
 function deleteRole() {
     db.query('SELECT title AS name, id AS value FROM role', function (err, roleResults) {
         inquirer.prompt(questions.deleteRole(roleResults)).then(data => {
@@ -233,6 +258,7 @@ function deleteRole() {
     });
 }
 
+// Delete department
 function deleteDept() {
     db.query('SELECT name, id AS value FROM department', function (err, deptResults) {
         inquirer.prompt(questions.deleteDept(deptResults)).then(data => {
@@ -244,10 +270,27 @@ function deleteDept() {
     });
 }
 
-function budget() {
+// View selected department budget
+function deptBudget() {
+    db.query('SELECT name, id AS value FROM department', function (err, deptResults) {
+        inquirer.prompt(questions.deptBudget(deptResults)).then(data => {
+            db.query(`SELECT d.name, SUM(r.salary) AS total 
+            FROM department AS d 
+            JOIN role AS r ON r.department_id = d.id 
+            JOIN employee AS e ON e.role_id = r.id 
+            WHERE d.id = ?`, [data.viewBudget], function (err, salaryResults) {
+                
+                console.table(salaryResults);
+                init();
+            });
 
+        });
+    });
 }
 
-// function quit() {
-//     process.exit();
-// }
+
+// End connection
+function quit() {
+    console.log ("Your session has ended.");
+    db.end();
+}

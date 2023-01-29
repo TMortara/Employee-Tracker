@@ -1,4 +1,6 @@
+// Prompt questions for all functions
 const questions = {
+    // Main menu prompts
     menu: [
         {
             type: "list",
@@ -9,6 +11,7 @@ const questions = {
                 "View All Employees",
                 "View Employees by Manager",
                 "View Employees by Department",
+                "View Department Budget",
                 "Add Department",
                 "Add Role",
                 "Add Employee",
@@ -20,7 +23,7 @@ const questions = {
                 "Exit"],
         }
     ],
-
+    // Add new department
     addDepartment: [
         {
             type: "input",
@@ -28,7 +31,7 @@ const questions = {
             name: "deptName"
         }
     ],
-
+    // Add new role
     addRole: function(rows) {
         return [
             {
@@ -40,12 +43,6 @@ const questions = {
                 type: "input",
                 message: "What is the salary for this role?",
                 name: "newRoleSalary",
-                // validate: function(answer) {
-                //     if (!isNaN(answer)) {
-                //         return console.log('Salary requires a valid number without decimal places');
-                //     }
-                //     return true;
-                // }
             },
             {
                 type: "list",
@@ -55,7 +52,7 @@ const questions = {
             }
         ]
     },
-
+    // Add new employee
     addEmployee: function(roles, managers) {
         managers.push({
             name: "None",
@@ -87,7 +84,7 @@ const questions = {
             }
         ]
     },
-
+    //Update employees role
     updateEmployee: function(employees, roles) {
         return [
             {
@@ -104,9 +101,10 @@ const questions = {
             }
         ]
     },
-
+//BONUS SECTION:
+    // Update employees manager
     updateManager: function(employees, managers) {
-        manager.push({
+        managers.push({
             name: "None",
             value: null
         });
@@ -125,7 +123,7 @@ const questions = {
             }
         ]
     },
-
+// View all employees by manager
     viewByMgr: function(managers) {
         return [
             {
@@ -136,7 +134,7 @@ const questions = {
             }
         ]
     },
-
+// View all employees by department
     viewByDept: function(departments) {
         return [
             {
@@ -147,8 +145,12 @@ const questions = {
             }
         ]
     },
-
+// Delete selected employee
     deleteEmployee: function(employees) {
+        employees.push({
+            name: "Cancel",
+            value: null
+        });
         return [
             {
                 type: "list",
@@ -158,8 +160,12 @@ const questions = {
             }
         ]
     },
-
+// Delete selected role
     deleteRole: function(roles) {
+        roles.push({
+            name: "Cancel",
+            value: null
+        });
         return [
             {
                 type: "list",
@@ -169,13 +175,28 @@ const questions = {
             }
         ]
     },
-
+// Delete selected department
     deleteDept: function(departments) {
+        departments.push({
+            name: "Cancel",
+            value: null
+        });
         return [
             {
                 type: "list",
                 message: "Which department would you like to delete?",
                 name: "deleteDept",
+                choices: departments
+            }
+        ]
+    },
+// Show budget for selected department
+    deptBudget: function(departments) {
+        return [
+            {
+                type: "list",
+                message: "Which department would you like to view the total utilized budget?",
+                name: "viewBudget",
                 choices: departments
             }
         ]
